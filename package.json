@@ -9,7 +9,8 @@
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
     "multer": "^1.2.0",
-    "yarn": "^1.12.3"
+    "yarn": "^1.12.3",
+    "pg": "2.x"
   },
   "author": {
     "name": "Nikhil"
