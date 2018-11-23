@@ -28,6 +28,6 @@ app.post("/api/Upload", function (req, res) {
     }); 
 }); 
  
-app.listen(8082, function (a) { 
-    console.log("Listening to port 8082"); 
+app.listen(process.env.PORT || 4000, function(){
+    console.log('Your node js server is running');
 });
