@@ -28,7 +28,6 @@ app.post("/api/Upload", function (req, res) {
 		console.log(err);
             return res.end("Something went wrong!"); 
         } 
-        return res.end("File uploaded sucessfully!."); 
         pg.connect("postgres://kkcoplxstuhduv:2e83c360f9c88bbf3f708960d6a6a3c99fd71dc6b49dcb3b93d1ce93b1f670de@ec2-23-21-201-12.compute-1.amazonaws.com:5432/d5f8ku16enksu0", function(err, client, done) {
             client.query('SELECT * FROM DUEL', function(err, result) {
               done();
@@ -36,6 +35,8 @@ app.post("/api/Upload", function (req, res) {
               console.log(result.rows);
             });
           });
+        return res.end("File uploaded sucessfully!."); 
+        
     }); 
 }); 
  
