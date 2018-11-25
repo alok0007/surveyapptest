@@ -33,19 +33,13 @@ app.post("/api/Upload", function (req, res) {
             return res.end("Something went wrong!");
         }
         try {
-            let fileNumber = req.body.filenumber;
-            let vehicleRegNumber = req.body.vehicleregnumber;
-            let surveyorName = req.body.surveyorname;
-            console.log('fileNumber is running'+fileNumber);
             const client = await pool.connect();
-            const result = await client.query('INSERT into SURVEY_FILE (FILE_NUMBER,VEHICLE_NUMBER,SURVEYOR_NAME,IMAGE_NAME,SURVEY_DATE) VALUES($1, $2, $3, $4, $5) RETURNING FILE_NUMBER', 
-            [fileNumber, vehicleRegNumber, surveyorName, '1013.JPEG', new Date()]);
+            const result = await client.query('SELECT * FROM survey_file');
             const results = { 'results': (result) ? result.rows : null };
-            console.log('row inserted with id: ' + result.rows[0].file_number);
             console.log('Your node js server is running'+result.rows);
-           // res.status(200).send(result.rows);
-           
-            res.send("File uploaded sucessfully with !."+result.rows[0].file_number);
+            console.log('Your node js server is running'+result.rows);
+            res.status(200).send(result.rows);
+            //res.send("File uploaded sucessfully!.");
            // res.render('pages/db', {results: result.rows} ); 
             client.release();
         } catch (err) {

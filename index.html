@@ -34,8 +34,25 @@
     </script> 
 </head> 
 <body> 
+        <h1>ARVIND SURVEYOR COMPANY</h1>
+        <br><br>
+        <h2>ACCIDENT REPORT</h2>
     <form id="frmUploader" enctype="multipart/form-data" action="api/Upload/" method="post"> 
+        <h3>File Number:</h3>
+                <input type="text" id="filenumberId" name="filenumber" >
+        <br>
+        <h3>Vehicle Registration Number:</h3>
+        <input type="text" name="vehicleregnumber" >
+        <br>
+        <h3>Surveyor Name:</h3>
+        <input type="text" name="surveyorname" >
+        <br>
+        
+        <br>
+        <h3>Vehicle Pictures:</h3>
+        <br>
         <input type="file" name="imgUploader" multiple /> 
+        
         <input type="submit" name="sendtoservey" id="btnSubmit" value="Upload" /> 
     </form> 
 </body> 
