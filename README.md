@@ -6,7 +6,11 @@ https://dzone.com/articles/upload-files-or-images-to-server-using-nodejs
 https://code.msdn.microsoft.com/Upload-Files-Or-To-Server-15f69aaa#content
 https://stackoverflow.com/questions/17319395/node-js-pg-postgresql-and-insert-queries-app-hangs
 https://stackoverflow.com/questions/31177414/insert-data-from-form-into-mysql-using-node-js
+http://www.javascriptpoint.com/nodejs-postgresql-tutorial-example/
+https://www.postgresql.org/docs/9.1/sql-createtable.html
+http://www.postgresqltutorial.com/postgresql-create-table/
 
+https://expressjs.com/en/guide/using-template-engines.html
 ***********************SQL********************************************************
 
 CREATE TABLE SURVEY_FILE(
