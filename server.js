@@ -26,6 +26,9 @@ app.get("/", function (req, res) {
     res.sendFile(__dirname + "/index.html");
 });
 
+app.get("/main", function (req, res) {
+    res.sendFile(__dirname + "/main.html");
+});
 
 app.post("/api/Upload", function (req, res) {
     upload(req, res, async (err) => {
