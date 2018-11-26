@@ -1,8 +1,17 @@
 {
+  "name": "surveyapptest",
+  "version": "0.0.1",
+  "description": "surveyapptest",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.16.4"
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "multer": "^1.2.0",
+    "pg": "^7.4.3"
+  },
+  "author": {
+    "name": "Nikhil"
   }
 }
