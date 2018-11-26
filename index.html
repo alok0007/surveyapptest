@@ -32,28 +32,67 @@
             alert('status: ' + statusText + '\n\nresponseText: \n' + responseText ); 
         } 
     </script> 
+    <style>
+            table {
+                font-family: arial, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+            }
+            
+            td, th {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+            }
+            
+            tr:nth-child(even) {
+                background-color: #dddddd;
+            }
+            </style>
 </head> 
 <body> 
-        <h1>ARVIND SURVEYOR COMPANY</h1>
-        <br><br>
+        <h1>ARVIND SURVEYOR COMPANY</h1>          
+<!-- UPLOAD FORM-->
         <h2>ACCIDENT REPORT</h2>
     <form id="frmUploader" enctype="multipart/form-data" action="api/Upload/" method="post"> 
-        <h3>File Number:</h3>
-                <input type="text" id="filenumberId" name="filenumber" >
-        <br>
-        <h3>Vehicle Registration Number:</h3>
-        <input type="text" name="vehicleregnumber" >
-        <br>
-        <h3>Surveyor Name:</h3>
-        <input type="text" name="surveyorname" >
-        <br>
-        
-        <br>
-        <h3>Vehicle Pictures:</h3>
-        <br>
-        <input type="file" name="imgUploader" multiple /> 
-        
+        <table>
+                <tr>
+                  <td>File Number:</td>
+                  <td><input type="text" id="filenumberId" name="filenumber" ></td>
+                </tr>
+                <tr>
+                  <td> Vehicle Registration Number:</td>
+                  <td><input type="text" name="vehicleregnumber" ></td>
+                </tr>
+                <tr>
+                  <td>Surveyor Name:</td>
+                  <td><input type="text" name="surveyorname" ></td>
+                </tr>
+                <tr>
+                        <td>Upload Photos:</td>
+                        <td> <input type="file" name="imgUploader" multiple /></td>
+                      </tr>
+        </table> 
+        <br>             
         <input type="submit" name="sendtoservey" id="btnSubmit" value="Upload" /> 
+    </form> 
+
+    <!-- UPLOAD FORM-->
+    <br>
+        <h2>SEARCH VEHICLE PHOTOS</h2>
+    <form id="searchImgForm" enctype="multipart/form-data" action="api/Search/" method="post"> 
+        <table>
+                <tr>
+                    <td>File Number:</td>
+                    <td><input type="text" id="filenumberId" name="filenumber" ></td>
+                </tr>
+                <tr>
+                  <td> Vehicle Registration Number:</td>
+                  <td><input type="text" name="vehicleregnumber" ></td>
+                </tr>               
+        </table>  
+        <br>      
+        <input type="submit" name="sendtoservey" id="btnSubmit" value="Search" /> 
     </form> 
 </body> 
 </html>
