@@ -86,10 +86,15 @@ app.post("/api/Search", function (req, res) {
     });
 });
 
-  app.get('/ping', (req, res) => {
-            return res.end("200!");
-        }); 
+app.get('/ping', (req, res) => {
+    return res.end("200!");
+});
 
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname + '/build/index.html'));
+});
 
 app.listen(port, (err) => {
     if (err) throw err
