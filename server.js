@@ -86,6 +86,11 @@ app.post("/api/Search", function (req, res) {
     });
 });
 
+  app.get('/ping', (req, res) => {
+            return res.end("200!");
+        }); 
+
+
 app.listen(port, (err) => {
     if (err) throw err
     console.log(`> Ready on http://localhost:${port}`)
