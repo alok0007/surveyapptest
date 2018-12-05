@@ -30,8 +30,11 @@ class App extends Component {
     event.preventDefault();
     const body = new FormData();
     if (this.state.selectedFiles && this.state.selectedFiles.length > 0) {
-      for (const [index, selectedFile] of this.state.selectedFiles)
-        body.append(`file${index+1}`, selectedFile);
+      let count = 1;
+      Object.keys(this.state.selectedFiles).forEach(key => {
+        count++;
+        body.append(`file${count}`, this.state.selectedFiles[key]);
+      });
     }
     body.append('fileNumber', this.state.fileNumber);
     body.append('registrationNumber', this.state.registrationNumber);

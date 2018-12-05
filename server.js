@@ -17,16 +17,14 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(Express.static(path.join(__dirname, 'build')));
 app.use(fileUpload());
 
-app.post('/upload', (req, res, next) => {
+app.post('/upload', async (req, res, next) => {
     console.log(req);
-    console.log("*******************************");
     console.log(req.body);
-    console.log("*******************************");
     let imageFiles = req.files;
     let params = req.body;
     let images_id = '';
     try {
-        const client = pool.connect();
+        const client = await pool.connect();
         if (imageFiles) {
             let count = 1;
             Object.keys(imageFiles).forEach(key => {
@@ -37,11 +35,12 @@ app.post('/upload', (req, res, next) => {
                     `VALUES($1, $2, $3)`, [image_id, imageFiles[key], imageFiles[key].name]);
             });
         }
+        console.log(client);
         const result = client.query(`INSERT INTO ` +
             `survey_doc(FILE_NUMBER, VEHICLE_NUMBER, IMAGES_ID, SURVEY_DATE) ` +
-            `VALUES($1, $2, $3, $4, $5)`, [params.fileNumber, params.registrationNumber, images_id, new Date()]);
-        res.status(200).send(result);
-        client.release();
+            `VALUES($1, $2, $3, $4)`, [params.fileNumber, params.registrationNumber, images_id, new Date()]);
+            await client.release();
+            res.status(200).send(result);
     } catch (err) {
         console.error(err);
         res.send("Error " + err);
