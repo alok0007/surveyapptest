@@ -50,6 +50,7 @@ class App extends Component {
         </header>
 
         <div className="w3-overlay w3-animate-opacity" onClick={this.w3Close} style={{ "cursor": "pointer" }} title="close side menu" id="myOverlay"></div>
+        <div className="w3-overlay w3-animate-opacity" style={{ "cursor": "pointer" }} title="close side menu" id="myOverlayN"></div>
 
         <div className="w3-main w3-content" style={divStyle}>
 

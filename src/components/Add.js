@@ -33,10 +33,10 @@ class App extends Component {
     if (this.state.loaded === 0) { this.modalClose(); } else { this.modalOpen(); }
   }
   modalOpen() {
-    document.getElementById("myOverlay").style.display = "block";
+    document.getElementById("myOverlayN").style.display = "block";
   }
   modalClose() {
-    document.getElementById("myOverlay").style.display = "none";
+    document.getElementById("myOverlayN").style.display = "none";
   }
 
   handleSubmit = async (event) => {
