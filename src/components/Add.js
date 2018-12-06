@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 import './App.css';
 
 class App extends Component {
@@ -10,7 +11,9 @@ class App extends Component {
       loaded: 0,
       fileNumber: '',
       registrationNumber: '',
-      surveyorName: ''
+      surveyorName: '',
+      msgStatus: '',
+      msgType: ''
     }
   }
 
@@ -26,8 +29,19 @@ class App extends Component {
     document.getElementById("myOverlay").style.display = "none";
   }
 
+  componentDidUpdate = () => {
+    if (this.state.loaded === 0) { this.modalClose(); } else { this.modalOpen(); }
+  }
+  modalOpen() {
+    document.getElementById("myOverlay").style.display = "block";
+  }
+  modalClose() {
+    document.getElementById("myOverlay").style.display = "none";
+  }
+
   handleSubmit = async (event) => {
     event.preventDefault();
+    this.setState({ loaded: 1 });
     const body = new FormData();
     if (this.state.selectedFiles && this.state.selectedFiles.length > 0) {
       let count = 1;
@@ -40,12 +54,22 @@ class App extends Component {
     body.append('registrationNumber', this.state.registrationNumber);
     body.append('surveyorName', this.state.surveyorName);
 
-    await fetch('/upload', {
-      method: 'POST',
-      body
-    }).then(res => {
-      console.log(res.statusText)
-    });
+    await axios.post('/upload', body)
+      .then(response => {
+        const data = response.data;
+        this.setState({
+          msgStatus: data.message,
+          msgType: data.code !== 200 ? 'e' : 'ne',
+          loaded: 0
+        })
+      })
+      .catch(e => {
+        this.setState({
+          msgStatus: 'Some Technical issue!',
+          msgType: 'e',
+          loaded: 0
+        })
+      })
   };
 
   handleSelectedFile = event => {
@@ -71,19 +95,22 @@ class App extends Component {
 
   render() {
     return (
-      <div className="w3-container w3-light-grey w3-padding-32 w3-padding-large" id="add">
+      <div className="w3-container w3-light-grey w3-padding-32 w3-padding-large" id="add" >
         <div className="w3-content" style={{ maxWidth: '600px' }}>
           <form onSubmit={this.handleSubmit} encType="multipart/form-data" id="surveyForm">
             <h4 className="w3-center">
               <b>REPORT ACCIDENT</b>
             </h4>
-            <div className="w3-section">
-              <label>File Number*</label>
-              <input value={this.state.fileNumber} className="w3-input w3-border" type="text" name="File Number"
-                onChange={this.handleFileNumber} required />
+            <div className={this.state.msgType === 'e' ? 'w3-text-red' : 'w3-text-green'}>
+              {this.state.msgStatus}
             </div>
             <div className="w3-section">
-              <label>Vehicle Registration Number*</label>
+              <label>File Number</label>*
+              <input value={this.state.fileNumber} className="w3-input w3-border" type="text" name="File Number"
+                onChange={this.handleFileNumber} pattern="[0-9]*" maxLength="8" required />
+            </div>
+            <div className="w3-section">
+              <label>Vehicle Registration Number</label>*
               <input value={this.state.registrationNumber} className="w3-input w3-border" type="text"
                 name="Registration Number" onChange={this.handleRegistrationNumber} required />
             </div>
@@ -100,7 +127,7 @@ class App extends Component {
             <button type="submit" className="w3-button w3-block w3-black w3-margin-bottom">Submit Report</button>
           </form>
         </div>
-      </div>
+      </div >
     );
   }
 }
