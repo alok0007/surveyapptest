@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const { Pool } = require('pg');
 const path = require('path');
 const cors = require('cors');
+var fs = require('fs');
 const port = parseInt(process.env.PORT, 10) || 3000
 const pool = new Pool({
     connectionString: "postgres://kkcoplxstuhduv:2e83c360f9c88bbf3f708960d6a6a3c99fd71dc6b49dcb3b93d1ce93b1f670de@ec2-23-21-201-12.compute-1.amazonaws.com:5432/d5f8ku16enksu0",
@@ -38,7 +39,7 @@ const handleResponse = async (code, obj, res, reqType) => {
         }
         else if (reqType === globals.SELECT_SUCCESS) {
             response.type = globals.SELECT_SUCCESS;
-            response.message ='Picture for file'+ obj.rows[0].file_number+ ' is : '+obj.rows[0].images_id;
+            response.message = obj;
         }
         else if (reqType === globals.GENERIC_ERROR) {
             response.type = globals.GENERIC_ERROR;
@@ -53,6 +54,43 @@ const handleResponse = async (code, obj, res, reqType) => {
     }
 }
 
+const handleSearch = async (obj, res, client) => {
+    try {
+        const images = [];
+        if (obj.rows && obj.rows.length > 0) {
+            const imageIds = obj.rows[0].images_id;
+            console.log(JSON.stringify(imageIds));
+            const imagesArr = imageIds.split(";");
+            for (var i = 0; i < imagesArr.length; i++) {
+                console.log(JSON.stringify(imagesArr[i]));
+                if (imagesArr[i]) {
+                    await client.query(`SELECT image_name, surveyor_image FROM imagemst WHERE image_id = $1`, [imagesArr[i]])
+                        .then(response => {
+                            if (response.rows[0]) {
+                                const image = {};
+                                image.name = response.rows[0].image_name;
+                                image.obj = response.rows[0].surveyor_image;
+                                images.push(image);
+                            }
+                        }).catch(e => { console.log(e) });
+                }
+            }
+        }
+        return images;
+    } catch (e) {
+        console.log(e);
+        res.statusCode = 500;
+        res.json(e);
+    }
+}
+
+// function to encode file data to base64 encoded string
+const base64_encode = (file) => {
+    // read binary data
+    var bitmap = fs.readFileSync(file);
+    // convert binary data to base64 encoded string
+    return new Buffer(bitmap).toString('base64');
+}
 app.post('/upload', async (req, res) => {
     try {
         let imageFiles = req.files;
@@ -66,13 +104,13 @@ app.post('/upload', async (req, res) => {
                 let image_id = `${params.fileNumber}_${params.registrationNumber}_${count}`;
                 images_id += `${image_id};`;
                 client.query(`INSERT INTO imagemst (image_id, SURVEYOR_IMAGE, IMAGE_NAME) ` +
-                    `VALUES($1, $2, $3)`, [image_id, imageFiles[key], imageFiles[key].name])
+                    `VALUES($1, $2, $3)`, [image_id,imageFiles[key], imageFiles[key].name])
                     .catch(e => {
                         if (e.code === "23505") {
-                           return handleResponse(23505, 'Duplicate entry error', res, globals.INSERT_ERROR)
+                            return handleResponse(23505, 'Duplicate entry error', res, globals.INSERT_ERROR)
                         }
                         else {
-                           return  handleResponse(500, e, res, globals.INSERT_ERROR)
+                            return handleResponse(500, e, res, globals.INSERT_ERROR)
                         }
                     });
             });
@@ -85,37 +123,36 @@ app.post('/upload', async (req, res) => {
             })
             .catch(e => {
                 if (e.code === "23505") {
-                   return handleResponse(23505, 'Duplicate entry error', res, globals.INSERT_ERROR)
+                    return handleResponse(23505, 'Duplicate entry error', res, globals.INSERT_ERROR)
                 }
                 else {
-                   return handleResponse(500, e, res, globals.INSERT_ERROR)
+                    return handleResponse(500, e, res, globals.INSERT_ERROR)
                 }
             });
         await client.release();
     } catch (e) {
-       return handleResponse(500, e, res, globals.GENERIC_ERROR);
+        return handleResponse(500, e, res, globals.GENERIC_ERROR);
     }
 });
 
-app.get('/search/:fileNumber/:registrationNumber', async(req, res) => {
-    console.log("Request is : "+req);
-    console.log(" Request fileNumber is  :"+req.params.fileNumber);
-    console.log(" Request registrationNumber is  :"+req.params.registrationNumber);
-    
+app.get('/search/:fileNumber/:registrationNumber', async (req, res) => {
+
     try {
         const client = await pool.connect();
-        client.query(`SELECT * FROM survey_doc WHERE FILE_NUMBER = $1 and VEHICLE_NUMBER = $2`, [req.params.fileNumber, req.params.registrationNumber])
-        .then(response => {
-            return handleResponse(200, response, res, globals.SELECT_SUCCESS);
-        }).catch(e => {
-                        if (e.code === "23505") {
-                           return handleResponse(23505, 'Duplicate entry error', res, globals.INSERT_ERROR)
-                        }
-                        else {
-                           return  handleResponse(500, e, res, globals.SELECT_ERROR)
-                        }
-                    });
-        
+        await client.query(`SELECT images_id FROM survey_doc WHERE FILE_NUMBER = $1 and VEHICLE_NUMBER = $2`,
+            [req.params.fileNumber, req.params.registrationNumber]).then(async response => {
+                const imageJson = await handleSearch(response, res, client);
+                response.imageData = imageJson;
+                return handleResponse(200, response, res, globals.SELECT_SUCCESS);
+            }).catch(e => {
+                if (e.code === "23505") {
+                    return handleResponse(23505, 'Duplicate entry error', res, globals.INSERT_ERROR)
+                }
+                else {
+                    return handleResponse(500, e, res, globals.SELECT_ERROR)
+                }
+            });
+        await client.release();
     } catch (err) {
         console.error(err);
         res.send("Error " + err);

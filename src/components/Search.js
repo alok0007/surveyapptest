@@ -41,26 +41,25 @@ class App extends Component {
     }
     body.append('fileNumber', this.state.fileNumber);
     body.append('registrationNumber', this.state.registrationNumber);
-    await axios.get('/search/'+this.state.fileNumber+'/'+this.state.registrationNumber)
-    .then(response => {
-      console.log("hihihi"+response.data)
-      console.log("hihihi"+response.data.message)
-      const data = response.data;
-      this.setState({
-        msgStatus: data.message,
-        msgType: data.code !== 200 ? 'e' : 'ne',
-        surveyorName: data.surveyor_image,
-        loaded: 0
+    await axios.get('/search/' + this.state.fileNumber + '/' + this.state.registrationNumber)
+      .then(response => {
+        console.log("hihihi" + response.data)
+        console.log("hihihi" + response.data.message)
+        const data = response.data;
+        this.setState({
+          msgStatus: data.message,
+          msgType: data.code !== 200 ? 'e' : 'ne',
+          surveyorName: data.message.imageData,
+          loaded: 0
+        })
       })
-    })
-    .catch(e => {
-      console.log("hihihierrrr"+e)
-      this.setState({
-        msgStatus: 'Some Technical issue!',
-        msgType: 'e',
-        loaded: 0
+      .catch(e => {
+        this.setState({
+          msgStatus: 'Some Technical issue!',
+          msgType: 'e',
+          loaded: 0
+        })
       })
-    })
   };
 
   handleSelectedFile = event => {
@@ -92,7 +91,7 @@ class App extends Component {
             <h4 className="w3-center">
               <b>SEARCH IMAGES</b>
             </h4>
-            
+
             <div className="w3-section">
               <label>File Number*</label>
               <input value={this.state.fileNumber} className="w3-input w3-border" type="text" name="File Number"
@@ -103,20 +102,22 @@ class App extends Component {
               <input value={this.state.registrationNumber} className="w3-input w3-border" type="text"
                 name="Registration Number" onChange={this.handleRegistrationNumber} required />
             </div>
-            
-            
             <button type="submit" className="w3-button w3-block w3-black w3-margin-bottom">Search Pictures</button>
           </form>
-          
         </div>
         <div className={this.state.msgType === 'e' ? 'w3-text-red' : 'w3-text-green'}>
-              result: {this.state.msgStatus}
-            </div>
-            <div className="w3-quarter">
-            <img src={`data:image/jpeg;base64,${this.state.surveyorName}`} />
-          </div>
+          result: {this.state.msgStatus}
+        </div>
+        <div className="w3-quarter">
+          {this.state.surveyorName &&
+            this.state.surveyorName.map(
+              item => <img key={item.name} name={item.name}
+                src={`data:image/jpeg;base64,${item.obj}`} alt="" />
+            )
+          }
+        </div>
       </div>
-      
+
     );
   }
 }
