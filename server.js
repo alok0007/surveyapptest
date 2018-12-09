@@ -13,7 +13,9 @@ const pool = new Pool({
 const globals = {
     INSERT_ERROR: "INSERT_ERROR",
     INSERT_SUCCESS: "INSERT_SUCCESS",
-    GENERIC_ERROR: "GENERIC_ERROR"
+    SELECT_SUCCESS: "SELECT_SUCCESS",
+    GENERIC_ERROR: "GENERIC_ERROR",
+    SELECT_ERROR: "SELECT_ERROR",
 };
 const app = Express();
 app.use(cors());
@@ -34,6 +36,10 @@ const handleResponse = async (code, obj, res, reqType) => {
             response.type = globals.INSERT_SUCCESS;
             response.message = `Rows inserted successfully!`;
         }
+        else if (reqType === globals.SELECT_SUCCESS) {
+            response.type = globals.SELECT_SUCCESS;
+            response.message ='Picture for file'+ obj.rows[0].file_number+ ' is : '+obj.rows[0].images_id;
+        }
         else if (reqType === globals.GENERIC_ERROR) {
             response.type = globals.GENERIC_ERROR;
             response.message = obj;
@@ -41,6 +47,7 @@ const handleResponse = async (code, obj, res, reqType) => {
         res.statusCode = 200;
         res.json(response);
     } catch (e) {
+        console.log(e);
         res.statusCode = 500;
         res.json(e);
     }
@@ -87,6 +94,31 @@ app.post('/upload', async (req, res) => {
         await client.release();
     } catch (e) {
        return handleResponse(500, e, res, globals.GENERIC_ERROR);
+    }
+});
+
+app.get('/search/:fileNumber/:registrationNumber', async(req, res) => {
+    console.log("Request is : "+req);
+    console.log(" Request fileNumber is  :"+req.params.fileNumber);
+    console.log(" Request registrationNumber is  :"+req.params.registrationNumber);
+    
+    try {
+        const client = await pool.connect();
+        client.query(`SELECT * FROM survey_doc WHERE FILE_NUMBER = $1 and VEHICLE_NUMBER = $2`, [req.params.fileNumber, req.params.registrationNumber])
+        .then(response => {
+            return handleResponse(200, response, res, globals.SELECT_SUCCESS);
+        }).catch(e => {
+                        if (e.code === "23505") {
+                           return handleResponse(23505, 'Duplicate entry error', res, globals.INSERT_ERROR)
+                        }
+                        else {
+                           return  handleResponse(500, e, res, globals.SELECT_ERROR)
+                        }
+                    });
+        
+    } catch (err) {
+        console.error(err);
+        res.send("Error " + err);
     }
 });
 

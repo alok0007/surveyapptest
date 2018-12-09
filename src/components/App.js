@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import { Switch, Route, Link } from 'react-router-dom';
 import Add from './Add';
+import Search from './Search';
 import View from './View';
 import About from './About';
 import Contact from './Contact';
@@ -39,6 +40,7 @@ class App extends Component {
           style={{ "zIndex": 3, 'width': '250px', 'fontWeight': 'bold', 'display': 'none', 'right': 0 }} id="mySidebar">
           <div onClick={this.w3Close} className="w3-bar-item w3-button w3-center w3-padding-32">CLOSE</div>
           <Link to='/' className="w3-bar-item w3-button w3-center w3-padding-16">ADD FILE</Link>
+          <Link to='/search' className="w3-bar-item w3-button w3-center w3-padding-16">SEARCH FILE</Link>
           <Link to='/view' className="w3-bar-item w3-button w3-center w3-padding-16">VIEW FILE</Link>
           <Link to='/about' className="w3-bar-item w3-button w3-center w3-padding-16">ABOUT US</Link>
           <Link to='/contact' className="w3-bar-item w3-button w3-center w3-padding-16">CONTACT</Link>
@@ -56,6 +58,7 @@ class App extends Component {
 
           <Switch>
             <Route exact path='/' component={Add} />
+            <Route path='/search' component={Search} />
             <Route path='/view' component={View} />
             <Route path='/about' component={About} />
             <Route path='/contact' component={Contact} />
