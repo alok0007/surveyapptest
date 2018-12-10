@@ -58,7 +58,7 @@ class App extends Component {
       .then(response => {
         const data = response.data;
         this.setState({
-          msgStatus: data.message,
+          msgStatus: 'Data inserted successfully!',
           msgType: data.code !== 200 ? 'e' : 'ne',
           loaded: 0
         })

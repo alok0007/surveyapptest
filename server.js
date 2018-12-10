@@ -93,12 +93,15 @@ app.post('/upload', async (req, res) => {
             let count = 0;
             Object.keys(imageFiles).forEach(key => {
                 count++;
+                //console.log(count);
                 let image_id = `${params.fileNumber}_${params.registrationNumber}_${count}`;
                 images_id += `${image_id};`;
                 const imageString = Buffer.from(imageFiles[key].data).toString('base64');
+                //console.log(imageString);
                 client.query(`INSERT INTO IMAGEMST (IMAGE_ID, INCIDENT_IMAGE, IMAGE_NAME) ` +
                     `VALUES($1, $2, $3)`, [image_id, imageString, imageFiles[key].name])
                     .catch(e => {
+                        console.log(e);
                         if (e.code === "23505") {
                             return handleResponse(23505, 'Duplicate entry error', res, globals.INSERT_ERROR)
                         }
@@ -115,6 +118,7 @@ app.post('/upload', async (req, res) => {
                 return handleResponse(200, response, res, globals.INSERT_SUCCESS);
             })
             .catch(e => {
+                console.log(e);
                 if (e.code === "23505") {
                     return handleResponse(23505, 'Duplicate entry error', res, globals.INSERT_ERROR)
                 }
