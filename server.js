@@ -59,17 +59,15 @@ const handleSearch = async (obj, res, client) => {
         const images = [];
         if (obj.rows && obj.rows.length > 0) {
             const imageIds = obj.rows[0].images_id;
-            console.log(JSON.stringify(imageIds));
             const imagesArr = imageIds.split(";");
             for (var i = 0; i < imagesArr.length; i++) {
-                console.log(JSON.stringify(imagesArr[i]));
                 if (imagesArr[i]) {
-                    await client.query(`SELECT image_name, surveyor_image FROM imagemst WHERE image_id = $1`, [imagesArr[i]])
+                    await client.query(`SELECT image_name, incident_image FROM imagemst WHERE image_id = $1`, [imagesArr[i]])
                         .then(response => {
                             if (response.rows[0]) {
                                 const image = {};
                                 image.name = response.rows[0].image_name;
-                                image.obj = response.rows[0].surveyor_image;
+                                image.obj = response.rows[0].incident_image;
                                 images.push(image);
                             }
                         }).catch(e => { console.log(e) });
@@ -84,13 +82,7 @@ const handleSearch = async (obj, res, client) => {
     }
 }
 
-// function to encode file data to base64 encoded string
-const base64_encode = (file) => {
-    // read binary data
-    var bitmap = fs.readFileSync(file);
-    // convert binary data to base64 encoded string
-    return new Buffer(bitmap).toString('base64');
-}
+
 app.post('/upload', async (req, res) => {
     try {
         let imageFiles = req.files;
@@ -98,13 +90,14 @@ app.post('/upload', async (req, res) => {
         let images_id = '';
         const client = await pool.connect();
         if (imageFiles) {
-            let count = 1;
+            let count = 0;
             Object.keys(imageFiles).forEach(key => {
                 count++;
                 let image_id = `${params.fileNumber}_${params.registrationNumber}_${count}`;
                 images_id += `${image_id};`;
-                client.query(`INSERT INTO imagemst (image_id, SURVEYOR_IMAGE, IMAGE_NAME) ` +
-                    `VALUES($1, $2, $3)`, [image_id,imageFiles[key], imageFiles[key].name])
+                const imageString = Buffer.from(imageFiles[key].data).toString('base64');
+                client.query(`INSERT INTO IMAGEMST (IMAGE_ID, INCIDENT_IMAGE, IMAGE_NAME) ` +
+                    `VALUES($1, $2, $3)`, [image_id, imageString, imageFiles[key].name])
                     .catch(e => {
                         if (e.code === "23505") {
                             return handleResponse(23505, 'Duplicate entry error', res, globals.INSERT_ERROR)
@@ -131,6 +124,7 @@ app.post('/upload', async (req, res) => {
             });
         await client.release();
     } catch (e) {
+        console.log(e);
         return handleResponse(500, e, res, globals.GENERIC_ERROR);
     }
 });

@@ -43,11 +43,9 @@ class App extends Component {
     body.append('registrationNumber', this.state.registrationNumber);
     await axios.get('/search/' + this.state.fileNumber + '/' + this.state.registrationNumber)
       .then(response => {
-        console.log("hihihi" + response.data)
-        console.log("hihihi" + response.data.message)
         const data = response.data;
         this.setState({
-          msgStatus: data.message,
+          msgStatus: '',
           msgType: data.code !== 200 ? 'e' : 'ne',
           surveyorName: data.message.imageData,
           loaded: 0
@@ -106,7 +104,7 @@ class App extends Component {
           </form>
         </div>
         <div className={this.state.msgType === 'e' ? 'w3-text-red' : 'w3-text-green'}>
-          result: {this.state.msgStatus}
+          {this.state.msgStatus}
         </div>
         <div className="w3-quarter">
           {this.state.surveyorName &&
@@ -117,7 +115,6 @@ class App extends Component {
           }
         </div>
       </div>
-
     );
   }
 }
