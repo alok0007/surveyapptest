@@ -1,4 +1,7 @@
 # surveyapptest
+dashboard: https://dashboard.heroku.com/pipelines/6e09a280-2d24-4157-9dbc-23b2a3294078/settings
+data explorer: https://heroku-data-explorer.herokuapp.com/#/
+app url : https://surveyapptest.herokuapp.com/
 
 https://www.webhostingsecretrevealed.net/blog/web-hosting-guides/make-a-website/
 https://www.youtube.com/watch?v=hb26tQPmPl4
