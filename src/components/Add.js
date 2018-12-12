@@ -60,7 +60,7 @@ class App extends Component {
         .then(response => {
           const data = response.data;
           this.setState({
-            msgStatus: 'Data inserted successfully!',
+            msgStatus:  data.code !== 200 ? 'File Already in System please take different file number!': 'Data inserted successfully!',
             msgType: data.code !== 200 ? 'e' : 'ne',
             loaded: 0
           })
