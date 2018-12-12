@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import './App.css';
 
 
-
 class App extends Component {
 
   onClick(element) {
@@ -18,13 +17,13 @@ class App extends Component {
           <h4>
             <b>About Me</b>
           </h4>
-          <img src="/w3images/avatar_hat.jpg" alt="Me" className="w3-image w3-padding-32" width="600" height="650" />
           <div className="w3-content w3-justify" style={{ maxWidth: '600px' }}>
             <h4>Arvind Gour Surveyor Pvt. Ltd.</h4>
             <p>We are professionals who assess the loss or damage and serve as a link between the insurer and the insured. Our job is to assess the actual loss and avoid false claims
                </p>
             <p>mail: gaursurveyor@googlemail.com</p>
             <p>Mobile: 9414206510</p>
+            
             {/* <hr className="w3-opacity" />
             <h4 className="w3-padding-16">Technical Skills</h4>
             <p className="w3-wide">Photography</p>

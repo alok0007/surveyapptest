@@ -5,6 +5,7 @@ import Add from './Add';
 import Search from './Search';
 import About from './About';
 import Contact from './Contact';
+const logo = require('./agsc.JPG')
 
 const divStyle = {
   marginTop: '83px'
@@ -45,7 +46,7 @@ class App extends Component {
         </nav>
 
         <header className="w3-container w3-top w3-white w3-xlarge w3-padding-16">
-          <span className="w3-left w3-padding">Arving Gour Surveyor Company</span>
+          <span className="w3-left "><img src={logo} alt="Me" className="w3-image" width="150" height="300" /><b>Arving Gour Surveyor Company</b></span>
           <div href="#1" className="w3-right w3-button w3-white" onClick={this.w3Open}>☰</div>
         </header>
 
