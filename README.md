@@ -1,5 +1,6 @@
 # surveyapptest
 dashboard: https://dashboard.heroku.com/pipelines/6e09a280-2d24-4157-9dbc-23b2a3294078/settings
+deployment : https://dashboard.heroku.com/apps/surveyapptest/deploy/github
 data explorer: https://heroku-data-explorer.herokuapp.com/#/
 app url : https://surveyapptest.herokuapp.com/
 
