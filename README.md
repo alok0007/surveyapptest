@@ -66,3 +66,9 @@ form fields
 2. Report date: user entry *: calender : only past/current
 3. Vehicle Number*: alpha nummeric not extra charector
 4. photos*: limit 10
+
+form fields
+1. Report number(File Number)*: only number
+2. Report date: user entry *: calender : only past/current
+3. Vehicle Number*: alpha nummeric not extra charector
+4. photos*: limit 10

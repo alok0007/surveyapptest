@@ -22,8 +22,7 @@ class App extends Component {
           <h4 className="w3-center">
             <b>Contact Me</b>
           </h4>
-          <p>Do you want me to photograph you? Fill out the form and fill me in with the details :) I love meeting new
-                      people!</p>
+          <p>Do you want me to send you photographs ? please mail me on gaursurveyor@googlemail.com or fill below form</p>
           <div className="w3-section">
             <label>Name</label>
             <input className="w3-input w3-border" type="text" name="Name" required />

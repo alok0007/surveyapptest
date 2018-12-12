@@ -28,9 +28,19 @@ class App extends Component {
     document.getElementById("mySidebar").style.display = "none";
     document.getElementById("myOverlay").style.display = "none";
   }
+  componentDidUpdate = () => {
+    if (this.state.loaded === 0) { this.modalClose(); } else { this.modalOpen(); }
+  }
+  modalOpen() {
+    document.getElementById("myOverlayN").style.display = "block";
+  }
+  modalClose() {
+    document.getElementById("myOverlayN").style.display = "none";
+  }
 
   handleSubmit = async (event) => {
     event.preventDefault();
+    this.setState({ loaded: 1 });
     const body = new FormData();
     if (this.state.selectedFiles && this.state.selectedFiles.length > 0) {
       let count = 1;
@@ -44,12 +54,22 @@ class App extends Component {
     await axios.get('/search/' + this.state.fileNumber + '/' + this.state.registrationNumber)
       .then(response => {
         const data = response.data;
-        this.setState({
-          msgStatus: '',
-          msgType: data.code !== 200 ? 'e' : 'ne',
-          surveyorName: data.message.imageData,
-          loaded: 0
-        })
+        if(data.message.imageData.length > 0){
+          this.setState({
+            msgStatus: 'Images For File# ' +data.message.fileNumber,
+            msgType: data.code !== 200 ? 'e' : 'ne',
+            surveyorName: data.message.imageData,
+            loaded: 0
+          })
+        }
+          else{
+            this.setState({
+              msgStatus: 'File Number Not Correct ',
+              msgType: data.code !== 200 ? 'e' : 'ne',
+              surveyorName: data.message.imageData,
+              loaded: 0
+            })
+          }                
       })
       .catch(e => {
         this.setState({
@@ -117,14 +137,16 @@ class App extends Component {
         <div className={this.state.msgType === 'e' ? 'w3-text-red' : 'w3-text-green'}>
           {this.state.msgStatus}
         </div>
+
         <div className="w3-quarter">
           {this.state.surveyorName &&
             this.state.surveyorName.map(
               item => <img key={item.name} name={item.name}  onClick={this.showModal} 
-                src={`data:image/jpeg;base64,${item.obj}`} alt="" />
+                src={`data:image/jpeg;base64,${item.obj}`} style={{ width: '150px',height: '150px', padding: '10px' }} alt="" />
             )
           }
         </div>
+
         <div id="modal01" className="w3-modal w3-black" style={{ paddingTop: 0 }} onClick={this.hideModal}>
           <span className="w3-button w3-black w3-xlarge w3-display-topright">×</span>
           <div className="w3-modal-content w3-animate-zoom w3-center w3-transparent w3-padding-64">

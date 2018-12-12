@@ -40,36 +40,44 @@ class App extends Component {
   }
 
   handleSubmit = async (event) => {
-    event.preventDefault();
-    this.setState({ loaded: 1 });
-    const body = new FormData();
-    if (this.state.selectedFiles && this.state.selectedFiles.length > 0) {
-      let count = 1;
-      Object.keys(this.state.selectedFiles).forEach(key => {
-        count++;
-        body.append(`file${count}`, this.state.selectedFiles[key]);
-      });
-    }
-    body.append('fileNumber', this.state.fileNumber);
-    body.append('registrationNumber', this.state.registrationNumber);
-    body.append('surveyorName', this.state.surveyorName);
-
-    await axios.post('/upload', body)
-      .then(response => {
-        const data = response.data;
-        this.setState({
-          msgStatus: 'Data inserted successfully!',
-          msgType: data.code !== 200 ? 'e' : 'ne',
-          loaded: 0
+    
+      event.preventDefault();
+      this.setState({ loaded: 1 });
+      const body = new FormData();
+      if(this.state.surveyorName == 'Arvind'){
+      if (this.state.selectedFiles && this.state.selectedFiles.length > 0) {
+        let count = 1;
+        Object.keys(this.state.selectedFiles).forEach(key => {
+          count++;
+          body.append(`file${count}`, this.state.selectedFiles[key]);
+        });
+      }
+      body.append('fileNumber', this.state.fileNumber);
+      body.append('registrationNumber', this.state.registrationNumber);
+      body.append('surveyorName', this.state.surveyorName);
+  
+      await axios.post('/upload', body)
+        .then(response => {
+          const data = response.data;
+          this.setState({
+            msgStatus: 'Data inserted successfully!',
+            msgType: data.code !== 200 ? 'e' : 'ne',
+            loaded: 0
+          })
         })
-      })
-      .catch(e => {
-        this.setState({
-          msgStatus: 'Some Technical issue!',
-          msgType: 'e',
-          loaded: 0
+        .catch(e => {
+          this.setState({
+            msgStatus: 'Some Technical issue!',
+            msgType: 'e',
+            loaded: 0
+          })
         })
-      })
+    }else{
+      this.setState({
+        msgStatus: 'Wrong Upload Code!',
+        msgType: 'e',
+        loaded: 0
+    })}
   };
 
   handleSelectedFile = event => {

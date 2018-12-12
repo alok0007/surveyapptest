@@ -141,6 +141,7 @@ app.get('/search/:fileNumber/:registrationNumber', async (req, res) => {
             [req.params.fileNumber, req.params.registrationNumber]).then(async response => {
                 const imageJson = await handleSearch(response, res, client);
                 response.imageData = imageJson;
+                response.fileNumber = req.params.fileNumber;
                 return handleResponse(200, response, res, globals.SELECT_SUCCESS);
             }).catch(e => {
                 if (e.code === "23505") {
