@@ -1,0 +1,98 @@
+<!DOCTYPE html> 
+ 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head> 
+    <meta charset="utf-8" /> 
+    <title>Upload images to server using Node JS</title> 
+    <script src="Scripts/jquery-3.1.1.min.js"></script> 
+    <script src="Scripts/jquery.form.min.js"></script> 
+    <script> 
+        $(document).ready(function () { 
+            var options = { 
+                beforeSubmit: showRequest,  // pre-submit callback 
+                success: showResponse  // post-submit callback 
+            }; 
+ 
+            // bind to the form's submit event 
+            $('#frmUploader').submit(function () { 
+                $(this).ajaxSubmit(options); 
+                // always return false to prevent standard browser submit and page navigation 
+                return false; 
+            }); 
+        }); 
+ 
+        // pre-submit callback 
+        function showRequest(formData, jqForm, options) { 
+            alert('Uploading is starting.'); 
+            return true; 
+        } 
+ 
+        // post-submit callback 
+        function showResponse(responseText, statusText, xhr, $form) { 
+            alert('status: ' + statusText + '\n\nresponseText: \n' + responseText ); 
+        } 
+    </script> 
+    <style>
+            table {
+                font-family: arial, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+            }
+            
+            td, th {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+            }
+            
+            tr:nth-child(even) {
+                background-color: #dddddd;
+            }
+            </style>
+</head> 
+<body> 
+        <h1>ARVIND SURVEYOR COMPANY</h1>          
+<!-- UPLOAD FORM-->
+        <h2>ACCIDENT REPORT</h2>
+    <form id="frmUploader" enctype="multipart/form-data" action="api/Upload/" method="post"> 
+        <table>
+                <tr>
+                  <td>File Number:</td>
+                  <td><input type="text" id="filenumberId" name="filenumber" ></td>
+                </tr>
+                <tr>
+                  <td> Vehicle Registration Number:</td>
+                  <td><input type="text" name="vehicleregnumber" ></td>
+                </tr>
+                <tr>
+                  <td>Surveyor Name:</td>
+                  <td><input type="text" name="surveyorname" ></td>
+                </tr>
+                <tr>
+                        <td>Upload Photos:</td>
+                        <td> <input type="file" name="imgUploader" multiple /></td>
+                      </tr>
+        </table> 
+        <br>             
+        <input type="submit" name="sendtoservey" id="btnSubmit" value="Upload" /> 
+    </form> 
+
+    <!-- UPLOAD FORM-->
+    <br>
+        <h2>SEARCH VEHICLE PHOTOS</h2>
+    <form id="searchImgForm" enctype="multipart/form-data" action="api/Search/" method="post"> 
+        <table>
+                <tr>
+                    <td>File Number:</td>
+                    <td><input type="text" id="filenumberId" name="filenumber" ></td>
+                </tr>
+                <tr>
+                  <td> Vehicle Registration Number:</td>
+                  <td><input type="text" name="vehicleregnumber" ></td>
+                </tr>               
+        </table>  
+        <br>      
+        <input type="submit" name="sendtoservey" id="btnSubmit" value="Search" /> 
+    </form> 
+</body> 
+</html>
