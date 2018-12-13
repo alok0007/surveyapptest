@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-
+import { uiproperties } from './uiproperties.js';
 
 class App extends Component {
 
@@ -22,7 +22,7 @@ class App extends Component {
             <p>We are professionals who assess the loss or damage and serve as a link between the insurer and the insured. Our job is to assess the actual loss and avoid false claims
                </p>
             <p>mail: gaursurveyor@googlemail.com</p>
-            <p>Mobile: 9414206510</p>
+            <p>Mobile: {uiproperties.contactnumber}</p>
             
             {/* <hr className="w3-opacity" />
             <h4 className="w3-padding-16">Technical Skills</h4>

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 import './App.css';
 
 class App extends Component {
@@ -11,10 +13,12 @@ class App extends Component {
       loaded: 0,
       fileNumber: '',
       registrationNumber: '',
-      surveyorName: '',
+      surveyorCode: '',
+      surveyDate: new Date(),
       msgStatus: '',
       msgType: ''
-    }
+    };
+    this.handleSurveyDate = this.handleSurveyDate.bind(this);
   }
 
   onClick = (element) => {
@@ -40,11 +44,11 @@ class App extends Component {
   }
 
   handleSubmit = async (event) => {
-    
-      event.preventDefault();
-      this.setState({ loaded: 1 });
-      const body = new FormData();
-      if(this.state.surveyorName == 'Arvind'){
+
+    event.preventDefault();
+    this.setState({ loaded: 1 });
+    const body = new FormData();
+    if (this.state.surveyorCode == 'Arvind') {
       if (this.state.selectedFiles && this.state.selectedFiles.length > 0) {
         let count = 1;
         Object.keys(this.state.selectedFiles).forEach(key => {
@@ -54,13 +58,14 @@ class App extends Component {
       }
       body.append('fileNumber', this.state.fileNumber);
       body.append('registrationNumber', this.state.registrationNumber);
-      body.append('surveyorName', this.state.surveyorName);
-  
+      body.append('surveyorCode', this.state.surveyorCode);
+      body.append('surveyDate', this.state.surveyDate);
+
       await axios.post('/upload', body)
         .then(response => {
           const data = response.data;
           this.setState({
-            msgStatus:  data.code !== 200 ? 'File Already in System please take different file number!': 'Data inserted successfully!',
+            msgStatus: data.code !== 200 ? 'File Already in System please take different file number!' : 'Data inserted successfully!',
             msgType: data.code !== 200 ? 'e' : 'ne',
             loaded: 0
           })
@@ -72,12 +77,13 @@ class App extends Component {
             loaded: 0
           })
         })
-    }else{
+    } else {
       this.setState({
         msgStatus: 'Wrong Upload Code!',
         msgType: 'e',
         loaded: 0
-    })}
+      })
+    }
   };
 
   handleSelectedFile = event => {
@@ -95,10 +101,15 @@ class App extends Component {
       registrationNumber: event.target.value,
     })
   }
-  handleSurveyorName = event => {
+  handleSurveyorCode = event => {
     this.setState({
-      surveyorName: event.target.value,
+      surveyorCode: event.target.value,
     })
+  }
+  handleSurveyDate(date) {
+    this.setState({
+      surveyDate: date
+    });
   }
 
   render() {
@@ -124,8 +135,16 @@ class App extends Component {
             </div>
             <div className="w3-section">
               <label>Surveyor Code</label>*
-              <input value={this.state.surveyorName} className="w3-input w3-border" type="text"
-                name="Surveyor" onChange={this.handleSurveyorName} required />
+              <input value={this.state.surveyorCode} className="w3-input w3-border" type="text"
+                name="Surveyor" onChange={this.handleSurveyorCode} required />
+            </div>
+            <div className="w3-section">
+              <label>Surveyor Date<p></p></label>*
+            <DatePicker className="w3-input w3-border"
+            dateFormat="yyyy/MM/dd"
+                selected={this.state.surveyDate}
+                onChange={this.handleSurveyDate}
+              />
             </div>
             <div className="w3-section">
               <label>Upload Photos</label>

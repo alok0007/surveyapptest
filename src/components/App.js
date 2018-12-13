@@ -5,7 +5,10 @@ import Add from './Add';
 import Search from './Search';
 import About from './About';
 import Contact from './Contact';
+import { uiproperties } from './uiproperties.js';
+
 const logo = require('./agsc.JPG')
+
 
 const divStyle = {
   marginTop: '83px'
@@ -14,6 +17,7 @@ const divStyle = {
 class App extends Component {
 
   onClick(element) {
+    
     document.getElementById("img01").src = element.src;
     document.getElementById("modal01").style.display = "block";
     var captionText = document.getElementById("caption");
@@ -46,7 +50,7 @@ class App extends Component {
         </nav>
 
         <header className="w3-container w3-top w3-white w3-xlarge w3-padding-16">
-          <span className="w3-left "><img src={logo} alt="Me" className="w3-image" width="150" height="300" /><b>Arving Gour Surveyor Company</b></span>
+          <span className="w3-left "><img src={logo} alt="Me" className="w3-image" width="150" height="300" /><b>{uiproperties.title}</b></span>
           <div href="#1" className="w3-right w3-button w3-white" onClick={this.w3Open}>☰</div>
         </header>
 

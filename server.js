@@ -5,11 +5,14 @@ const { Pool } = require('pg');
 const path = require('path');
 const cors = require('cors');
 var fs = require('fs');
+var datetime = require('node-datetime');
 const port = parseInt(process.env.PORT, 10) || 3000
 const pool = new Pool({
     connectionString: "postgres://kkcoplxstuhduv:2e83c360f9c88bbf3f708960d6a6a3c99fd71dc6b49dcb3b93d1ce93b1f670de@ec2-23-21-201-12.compute-1.amazonaws.com:5432/d5f8ku16enksu0",
     ssl: true
 });
+var PropertiesReader = require('properties-reader');
+var properties = PropertiesReader('./src/config/application.properties');
 
 const globals = {
     INSERT_ERROR: "INSERT_ERROR",
@@ -89,6 +92,12 @@ app.post('/upload', async (req, res) => {
         let params = req.body;
         let images_id = '';
         const client = await pool.connect();
+
+
+        var dt = datetime.create(params.surveyDate);
+        var formattedDate = dt.format('m/d/y H:M');
+        console.log(formattedDate);
+
         if (imageFiles) {
             let count = 0;
             Object.keys(imageFiles).forEach(key => {
@@ -113,7 +122,7 @@ app.post('/upload', async (req, res) => {
         }
         client.query(`INSERT INTO ` +
             `survey_doc(FILE_NUMBER, VEHICLE_NUMBER, IMAGES_ID, SURVEY_DATE) ` +
-            `VALUES($1, $2, $3, $4)`, [params.fileNumber, params.registrationNumber, images_id, new Date()])
+            `VALUES($1, $2, $3, $4)`, [params.fileNumber, params.registrationNumber, images_id, formattedDate])
             .then(response => {
                 return handleResponse(200, response, res, globals.INSERT_SUCCESS);
             })
