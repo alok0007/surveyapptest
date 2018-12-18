@@ -54,6 +54,14 @@ CREATE TABLE SURVEY_DOC(
    IMAGES_ID        CHAR(50),
    SURVEY_DATE         DATE
 );
+
+CREATE TABLE IMAGE_REQUEST(
+   REQUESTOR_NAME TEXT    ,
+   FILE_NUMBER           TEXT   ,
+   VEHICLE_NUMBER        TEXT ,    
+   REQUEST_DATE         DATE
+);
+
 INSERT INTO SURVEY_DOC (FILE_NUMBER,VEHICLE_NUMBER,SURVEYOR_IMAGE,IMAGES_ID,SURVEY_DATE) VALUES (1002, 'RJ14CF9441', null, '1002_RJ14CF9441_1;1002_RJ14CF9441_2', '2007-12-14');
 
 CREATE TABLE IMAGEMST(
@@ -67,7 +75,7 @@ ALTER TABLE "table_name" DROP "column_name";
 
 alter table table_name add column column_name column_type
 
-
+delete from SURVEY_DOC
 
 Queries:
 1) Need input name details like file number, registration number, along with validation.

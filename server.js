@@ -142,6 +142,35 @@ app.post('/upload', async (req, res) => {
     }
 });
 
+
+app.post('/requestForUpload', async (req, res) => {
+    try {
+        let params = req.body;
+        const client = await pool.connect();
+
+        client.query(`INSERT INTO ` +
+            `image_request(REQUESTOR_NAME, FILE_NUMBER, VEHICLE_NUMBER, REQUEST_DATE) ` +
+            `VALUES($1, $2, $3, $4)`, [params.requestorName, params.fileNumber, params.registrationNumber, new Date()])
+            .then(response => {
+                return handleResponse(200, response, res, globals.INSERT_SUCCESS);
+            })
+            .catch(e => {
+                console.log(e);
+                if (e.code === "23505") {
+                    return handleResponse(23505, 'Duplicate entry error', res, globals.INSERT_ERROR)
+                }
+                else {
+                    return handleResponse(500, e, res, globals.INSERT_ERROR)
+                }
+            });
+        await client.release();
+    } catch (e) {
+        console.log(e);
+        return handleResponse(500, e, res, globals.GENERIC_ERROR);
+    }
+});
+
+
 app.get('/search/:fileNumber/:registrationNumber', async (req, res) => {
 
     try {
