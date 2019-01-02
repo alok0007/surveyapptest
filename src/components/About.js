@@ -15,14 +15,19 @@ class App extends Component {
     return (
         <div className="w3-container w3-dark-grey w3-center w3-text-light-grey w3-padding-32" id="about">
           <h4>
-            <b>About Me</b>
+            <b>About Us</b>
           </h4>
           <div className="w3-content w3-justify" style={{ maxWidth: '600px' }}>
-            <h4>Arvind Gour Surveyor Pvt. Ltd.</h4>
-            <p>We are professionals who assess the loss or damage and serve as a link between the insurer and the insured. Our job is to assess the actual loss and avoid false claims
+            <h4>Creative Technical Services</h4>
+            <p>A group of technocrats engaged in the vehicle inspection and asset verification profession.
                </p>
-            <p>mail: gaursurveyor@googlemail.com</p>
-            <p>Mobile: {uiproperties.contactnumber}</p>
+               Contact Person/ Principal Officer<span/>
+               <p>{uiproperties.contactPersonOneName}</p>
+               <p>{uiproperties.contactPersonTwoName}</p>
+               <p>Mobile: {uiproperties.contactnumber}</p>
+               <div> {uiproperties.addressLine1}</div>
+               <p> {uiproperties.addressLine2}</p>
+                <p>mail:  {uiproperties.mailId}</p>
             
             {/* <hr className="w3-opacity" />
             <h4 className="w3-padding-16">Technical Skills</h4>

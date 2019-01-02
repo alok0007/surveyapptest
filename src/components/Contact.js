@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
+import { uiproperties } from './uiproperties.js';
 import './App.css';
 
 class App extends Component {
@@ -10,9 +13,11 @@ class App extends Component {
       requestorName: '',
       fileNumber: '',
       registrationNumber: '',
+      surveyDate: new Date(),
       msgStatus: '',
       msgType: ''
     };
+    this.handleSurveyDate = this.handleSurveyDate.bind(this);
   }
 
   onClick(element) {
@@ -42,6 +47,11 @@ class App extends Component {
     this.setState({
       registrationNumber: event.target.value,
     })
+  }
+  handleSurveyDate(date) {
+    this.setState({
+      surveyDate: date
+    });
   }
 
 
@@ -85,23 +95,31 @@ class App extends Component {
         <div className="w3-content" style={{ maxWidth: '600px' }}>
           <form onSubmit={this.handleSubmit} encType="multipart/form-data" id="requestForm">
             <h4 className="w3-center">
-              <b>Contact Me</b>
+              <b>Contact Us</b>
             </h4>
-            <p>Do you want me to upload/send you photographs ? please mail me on gaursurveyor@googlemail.com or fill below form</p>
+            <p>For Any query about our inspection report and photos,  please mail us on {uiproperties.mailId}  or submit below details </p>
             <div className="w3-section">
-              <label>Requester Name</label>
+              <label>Report Number</label>
               <input value={this.state.requestorName} className="w3-input w3-border" type="text" name="Requestor Name"
                 onChange={this.handleRequestorName} required />
             </div>
             <div className="w3-section">
-              <label>File Number</label>
-              <input value={this.state.fileNumber} className="w3-input w3-border" type="text" name="File Number"
-                onChange={this.handleFileNumber} pattern="[0-9]*" maxLength="8" required />
+              <label>Report Date<p></p></label>*
+            <DatePicker className="w3-input w3-border"
+            dateFormat="yyyy/MM/dd"
+                selected={this.state.surveyDate}
+                onChange={this.handleSurveyDate}
+              />
             </div>
             <div className="w3-section">
               <label>Vehicle Registration Number</label>
               <input value={this.state.registrationNumber} className="w3-input w3-border" type="text"
                 name="Registration Number" onChange={this.handleRegistrationNumber} required />
+            </div>
+            <div className="w3-section">
+              <label>Mail ID where details to be send</label>
+              <input  className="w3-input w3-border" type="text"
+                name="Registration Number"  required />
             </div>
             <button type="submit" className="w3-button w3-block w3-black w3-margin-bottom">Please Upload Above Picture</button>
           </form>

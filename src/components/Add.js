@@ -48,7 +48,7 @@ class App extends Component {
     event.preventDefault();
     this.setState({ loaded: 1 });
     const body = new FormData();
-    if (this.state.surveyorCode == 'Arvind') {
+    if (this.state.surveyorCode == 'ARVIND'||this.state.surveyorCode == 'NIKHILESH'||this.state.surveyorCode == 'ALOK') {
       if (this.state.selectedFiles && this.state.selectedFiles.length > 0) {
         let count = 1;
         Object.keys(this.state.selectedFiles).forEach(key => {
@@ -124,7 +124,7 @@ class App extends Component {
               {this.state.msgStatus}
             </div>
             <div className="w3-section">
-              <label>File Number</label>*
+              <label>Report Number</label>*
               <input value={this.state.fileNumber} className="w3-input w3-border" type="text" name="File Number"
                 onChange={this.handleFileNumber} pattern="[0-9]*" maxLength="8" required />
             </div>
@@ -134,12 +134,12 @@ class App extends Component {
                 name="Registration Number" onChange={this.handleRegistrationNumber} required />
             </div>
             <div className="w3-section">
-              <label>Surveyor Code</label>*
+              <label>Executive Code</label>*
               <input value={this.state.surveyorCode} className="w3-input w3-border" type="text"
-                name="Surveyor" onChange={this.handleSurveyorCode} required />
+                name="Surveyor" autoComplete="off" onChange={this.handleSurveyorCode} required />
             </div>
             <div className="w3-section">
-              <label>Surveyor Date<p></p></label>*
+              <label>Date Of Inception<p></p></label>*
             <DatePicker className="w3-input w3-border"
             dateFormat="yyyy/MM/dd"
                 selected={this.state.surveyDate}
@@ -151,7 +151,7 @@ class App extends Component {
               <input className="w3-input w3-border" type="file" name="imgUploader[]"
                 onChange={this.handleSelectedFile} multiple />
             </div>
-            <button type="submit" className="w3-button w3-block w3-black w3-margin-bottom">Submit Report</button>
+            <button type="submit" className="w3-button w3-block w3-black w3-margin-bottom">Add Photos</button>
           </form>
         </div>
       </div >
