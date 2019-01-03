@@ -25,6 +25,8 @@ https://www.npmjs.com/package/react-datepicker
 https://reactdatepicker.com/#example-7
 https://www.npmjs.com/package/node-datetime
 
+case handling :
+https://stackoverflow.com/questions/47709037/how-to-create-a-controlled-form-in-react-that-allows-upper-case-letters-only
 
 https://codeburst.io/sending-an-email-using-nodemailer-gmail-7cfa0712a799
 ***********************SQL********************************************************
