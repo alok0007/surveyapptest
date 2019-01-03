@@ -312,6 +312,7 @@ app.post('/requestSendMail', async (req, res) => {
            const mailOptions = {
             from: 'creativetechjaipur@gmail.com', // sender address
             to: 'gaursurveyor@yahoo.co.in', // list of receivers
+            cc: 'nikhileshtiwari80@gmail.com',
             subject: 'Important: Queriy From '+params.requestorName, // Subject line
             html: '<h1>Customer Queries</h1><h2>Customer Name: '+params.requestorName+'</h2><h2>Report Number: '+params.fileNumber+'</h2><h2>Vehicle Registration Number: '+params.registrationNumber+'</h2><h2>Report Date: '+params.surveyDate+'</h2><h2>Queries : '+params.customerQueries+'</h2>'
             
