@@ -25,6 +25,8 @@ https://www.npmjs.com/package/react-datepicker
 https://reactdatepicker.com/#example-7
 https://www.npmjs.com/package/node-datetime
 
+
+https://codeburst.io/sending-an-email-using-nodemailer-gmail-7cfa0712a799
 ***********************SQL********************************************************
 
 

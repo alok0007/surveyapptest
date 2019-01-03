@@ -61,7 +61,7 @@ class App extends Component {
       body.append('surveyorCode', this.state.surveyorCode);
       body.append('surveyDate', this.state.surveyDate);
 
-      await axios.post('/upload', body)
+      await axios.post('/uploadExtra', body)
         .then(response => {
           const data = response.data;
           this.setState({

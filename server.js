@@ -143,6 +143,134 @@ app.post('/upload', async (req, res) => {
 });
 
 
+
+
+app.post('/uploadExtra', async (req, res) => {
+    try {
+        let imageFiles = req.files;
+        let params = req.body;
+        let images_id = '';
+        const client = await pool.connect();
+
+
+        var dt = datetime.create(params.surveyDate);
+        var formattedDate = dt.format('m/d/y H:M');
+        console.log(formattedDate);
+        await client.query(`SELECT images_id FROM survey_doc WHERE FILE_NUMBER = $1 and VEHICLE_NUMBER = $2`,
+            [params.fileNumber, params.registrationNumber]).then(async response => {
+                console.log("response>> " + response);
+                console.log("response.rows[0]>> " + response.rows);
+                console.log("response.rows.length>> " + response.rows.length);
+                
+                if (response.rows.length > 0) {
+                    var imagesStr = response.rows[0].images_id;
+                    images_id = response.rows[0].images_id;
+                    var s = response.rows[0].images_id.split(";");
+                    var existingcount = s.length;
+                    console.log("existingcount>> " + existingcount);
+                    console.log("imagesStr>> " + imagesStr);
+                    if (imageFiles) {
+                        let count = existingcount-1;
+                        Object.keys(imageFiles).forEach(key => {
+                            count++;
+                            //console.log(count);
+                            let image_id = `${params.fileNumber}_${params.registrationNumber}_${count}`;
+                            images_id += `${image_id};`;
+                            const imageString = Buffer.from(imageFiles[key].data).toString('base64');
+                            //console.log(imageString);
+                            client.query(`INSERT INTO IMAGEMST (IMAGE_ID, INCIDENT_IMAGE, IMAGE_NAME) ` +
+                                `VALUES($1, $2, $3)`, [image_id, imageString, imageFiles[key].name])
+                                .catch(e => {
+                                    console.log(e);
+                                    if (e.code === "23505") {
+                                        return handleResponse(23505, 'Duplicate entry error', res, globals.INSERT_ERROR)
+                                    }
+                                    else {
+                                        return handleResponse(500, e, res, globals.INSERT_ERROR)
+                                    }
+                                });
+                        });
+                    }
+                    client.query(`UPDATE survey_doc SET IMAGES_ID = ($1) where FILE_NUMBER =($2) and VEHICLE_NUMBER = ($3)`, 
+                    [images_id, params.fileNumber, params.registrationNumber])
+                        .then(response => {
+                            return handleResponse(200, response, res, globals.INSERT_SUCCESS);
+                        })
+                        .catch(e => {
+                            console.log(e);
+                            if (e.code === "23505") {
+                                return handleResponse(23505, 'Duplicate entry error', res, globals.INSERT_ERROR)
+                            }
+                            else {
+                                return handleResponse(500, e, res, globals.INSERT_ERROR)
+                            }
+                        });
+
+
+
+                }
+
+                else {
+
+
+                    if (imageFiles) {
+                        let count = 0;
+                        Object.keys(imageFiles).forEach(key => {
+                            count++;
+                            //console.log(count);
+                            let image_id = `${params.fileNumber}_${params.registrationNumber}_${count}`;
+                            images_id += `${image_id};`;
+                            const imageString = Buffer.from(imageFiles[key].data).toString('base64');
+                            //console.log(imageString);
+                            client.query(`INSERT INTO IMAGEMST (IMAGE_ID, INCIDENT_IMAGE, IMAGE_NAME) ` +
+                                `VALUES($1, $2, $3)`, [image_id, imageString, imageFiles[key].name])
+                                .catch(e => {
+                                    console.log(e);
+                                    if (e.code === "23505") {
+                                        return handleResponse(23505, 'Duplicate entry error', res, globals.INSERT_ERROR)
+                                    }
+                                    else {
+                                        return handleResponse(500, e, res, globals.INSERT_ERROR)
+                                    }
+                                });
+                        });
+                    }
+                    client.query(`INSERT INTO ` +
+                        `survey_doc(FILE_NUMBER, VEHICLE_NUMBER, IMAGES_ID, SURVEY_DATE) ` +
+                        `VALUES($1, $2, $3, $4)`, [params.fileNumber, params.registrationNumber, images_id, formattedDate])
+                        .then(response => {
+                            return handleResponse(200, response, res, globals.INSERT_SUCCESS);
+                        })
+                        .catch(e => {
+                            console.log(e);
+                            if (e.code === "23505") {
+                                return handleResponse(23505, 'Duplicate entry error', res, globals.INSERT_ERROR)
+                            }
+                            else {
+                                return handleResponse(500, e, res, globals.INSERT_ERROR)
+                            }
+                        });
+
+                }
+
+                return handleResponse(200, response, res, globals.SELECT_SUCCESS);
+            }).catch(e => {
+
+            });
+
+
+        await client.release();
+    } catch (e) {
+        console.log(e);
+        return handleResponse(500, e, res, globals.GENERIC_ERROR);
+    }
+});
+
+
+
+
+
+
 app.post('/requestForUpload', async (req, res) => {
     try {
         let params = req.body;
