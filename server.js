@@ -5,6 +5,7 @@ const { Pool } = require('pg');
 const path = require('path');
 const cors = require('cors');
 var fs = require('fs');
+var nodemailer = require('nodemailer');
 var datetime = require('node-datetime');
 const port = parseInt(process.env.PORT, 10) || 3000
 const pool = new Pool({
@@ -292,6 +293,38 @@ app.post('/requestForUpload', async (req, res) => {
                 }
             });
         await client.release();
+    } catch (e) {
+        console.log(e);
+        return handleResponse(500, e, res, globals.GENERIC_ERROR);
+    }
+});
+
+app.post('/requestSendMail', async (req, res) => {
+    try {
+        let params = req.body;
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                   user: 'creativetechjaipur@gmail.com',
+                   pass: 'ag@549508'
+               }
+           });
+           const mailOptions = {
+            from: 'creativetechjaipur@gmail.com', // sender address
+            to: 'gaursurveyor@yahoo.co.in', // list of receivers
+            subject: 'Important: Queriy From '+params.requestorName, // Subject line
+            html: '<h1>Customer Queries</h1><h2>Customer Name: '+params.requestorName+'</h2><h2>Report Number: '+params.fileNumber+'</h2><h2>Vehicle Registration Number: '+params.registrationNumber+'</h2><h2>Report Date: '+params.surveyDate+'</h2><h2>Queries : '+params.customerQueries+'</h2>'
+            
+          };
+        
+          transporter.sendMail(mailOptions, function (err, info) {
+            if(err)
+              console.log(err)
+            else
+              console.log(info);
+         });
+        
+        
     } catch (e) {
         console.log(e);
         return handleResponse(500, e, res, globals.GENERIC_ERROR);

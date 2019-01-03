@@ -14,6 +14,7 @@ class App extends Component {
       fileNumber: '',
       registrationNumber: '',
       surveyDate: new Date(),
+      customerQueries: '',
       msgStatus: '',
       msgType: ''
     };
@@ -54,6 +55,13 @@ class App extends Component {
     });
   }
 
+  
+  handleCustomerQueries = event => {
+    this.setState({
+      customerQueries: event.target.value,
+    })
+  }
+
 
   handleSubmit = async (event) => {
 
@@ -64,9 +72,10 @@ class App extends Component {
     body.append('requestorName', this.state.requestorName);
     body.append('fileNumber', this.state.fileNumber);
     body.append('registrationNumber', this.state.registrationNumber);
+    body.append('surveyDate', this.state.surveyDate);
+    body.append('customerQueries', this.state.customerQueries);
 
-
-    await axios.post('/requestForUpload', body)
+    await axios.post('/requestSendMail', body)
       .then(response => {
         const data = response.data;
         this.setState({
@@ -99,9 +108,20 @@ class App extends Component {
             </h4>
             <p>For Any query about our inspection report and photos,  please mail us on {uiproperties.mailId}  or submit below details </p>
             <div className="w3-section">
-              <label>Report Number</label>
-              <input value={this.state.requestorName} className="w3-input w3-border" type="text" name="Requestor Name"
+              <label>Your Name</label>
+              <input value={this.state.requestorName} className="w3-input w3-border" type="text" name="Your Name"
                 onChange={this.handleRequestorName} required />
+            </div>
+            <div className="w3-section">
+              <label>Report Number</label>
+              <input value={this.state.fileNumber} className="w3-input w3-border" type="text" name="Report Name"
+                onChange={this.handleFileNumber} required />
+            </div>
+            
+            <div className="w3-section">
+              <label>Vehicle Registration Number</label>
+              <input value={this.state.registrationNumber} className="w3-input w3-border" type="text"
+                name="Registration Number" onChange={this.handleRegistrationNumber} required />
             </div>
             <div className="w3-section">
               <label>Report Date<p></p></label>*
@@ -112,16 +132,11 @@ class App extends Component {
               />
             </div>
             <div className="w3-section">
-              <label>Vehicle Registration Number</label>
-              <input value={this.state.registrationNumber} className="w3-input w3-border" type="text"
-                name="Registration Number" onChange={this.handleRegistrationNumber} required />
+              <label>Your Queries</label>
+              <input value={this.state.customerQueries} className="w3-input w3-border" type="text"
+                name="Customer Queries" onChange={this.handleCustomerQueries} required />
             </div>
-            <div className="w3-section">
-              <label>Mail ID where details to be send</label>
-              <input  className="w3-input w3-border" type="text"
-                name="Registration Number"  required />
-            </div>
-            <button type="submit" className="w3-button w3-block w3-black w3-margin-bottom">Please Upload Above Picture</button>
+            <button type="submit" className="w3-button w3-block w3-black w3-margin-bottom">Submit Queries</button>
           </form>
         </div>
       </div>
