@@ -98,12 +98,12 @@ class App extends Component {
   }
   handleRegistrationNumber = event => {
     this.setState({
-      registrationNumber: event.target.value,
+      registrationNumber: event.target.value.toUpperCase(),
     })
   }
   handleSurveyorCode = event => {
     this.setState({
-      surveyorCode: event.target.value,
+      surveyorCode: event.target.value.toUpperCase(),
     })
   }
   handleSurveyDate(date) {

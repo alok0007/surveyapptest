@@ -92,7 +92,7 @@ class App extends Component {
   }
   handleRegistrationNumber = event => {
     this.setState({
-      registrationNumber: event.target.value,
+      registrationNumber: event.target.value.toUpperCase(),
     })
   }
   handleSurveyorName = event => {
