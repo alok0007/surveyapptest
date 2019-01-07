@@ -79,6 +79,8 @@ ALTER TABLE "table_name" DROP "column_name";
 
 alter table table_name add column column_name column_type
 
+alter table SURVEY_DOC add column EXECUTIVE_CODE TEXT
+
 delete from SURVEY_DOC
 
 Queries:

@@ -19,6 +19,7 @@ class App extends Component {
       msgType: ''
     };
     this.handleSurveyDate = this.handleSurveyDate.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   onClick = (element) => {
@@ -45,7 +46,7 @@ class App extends Component {
 
   handleSubmit = async (event) => {
 
-    event.preventDefault();
+    event.preventDefault(); 
     this.setState({ loaded: 1 });
     const body = new FormData();
     if (this.state.surveyorCode == 'ARVIND'||this.state.surveyorCode == 'NIKHILESH'||this.state.surveyorCode == 'ALOK') {
@@ -54,13 +55,14 @@ class App extends Component {
         Object.keys(this.state.selectedFiles).forEach(key => {
           count++;
           body.append(`file${count}`, this.state.selectedFiles[key]);
+          //alert(this.state.selectedFiles[key].name);
         });
       }
       body.append('fileNumber', this.state.fileNumber);
       body.append('registrationNumber', this.state.registrationNumber);
       body.append('surveyorCode', this.state.surveyorCode);
       body.append('surveyDate', this.state.surveyDate);
-
+     // alert("All files attached "+body.fileNumber);
       await axios.post('/uploadExtra', body)
         .then(response => {
           const data = response.data;
@@ -117,11 +119,11 @@ class App extends Component {
       <div className="w3-container w3-light-grey w3-padding-32 w3-padding-large" id="add" >
         <div className="w3-content" style={{ maxWidth: '600px' }}>
           <form onSubmit={this.handleSubmit} encType="multipart/form-data" id="surveyForm">
-            <h4 className="w3-center">
+            <h3 className="w3-center">
               <b>REPORT ACCIDENT</b>
-            </h4>
+            </h3>
             <div className={this.state.msgType === 'e' ? 'w3-text-red' : 'w3-text-green'}>
-              {this.state.msgStatus}
+              <h4> <b>{this.state.msgStatus}</b></h4>
             </div>
             <div className="w3-section">
               <label>Report Number</label>*
@@ -148,7 +150,7 @@ class App extends Component {
             </div>
             <div className="w3-section">
               <label>Upload Photos</label>
-              <input className="w3-input w3-border" type="file" name="imgUploader[]"
+              <input className="w3-input w3-border" type="file" ref={this.selectedFiles} name="imgUploader[]"
                 onChange={this.handleSelectedFile} multiple />
             </div>
             <button type="submit" className="w3-button w3-block w3-black w3-margin-bottom">Add Photos</button>

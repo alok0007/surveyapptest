@@ -135,7 +135,7 @@ class App extends Component {
           </form>
         </div>
         <div className={this.state.msgType === 'e' ? 'w3-text-red' : 'w3-text-green'}>
-          {this.state.msgStatus}
+        <h4> <b>{this.state.msgStatus}</b></h4>
         </div>
 
         <div className="w3-quarter">
