@@ -124,12 +124,12 @@ class App extends Component {
             <div className="w3-section">
               <label>File Number*</label>
               <input value={this.state.fileNumber} className="w3-input w3-border" type="text" name="File Number"
-                onChange={this.handleFileNumber} required />
+                onChange={this.handleFileNumber} placeholder="Report Number in Numbers only" required />
             </div>
             <div className="w3-section">
               <label>Vehicle Registration Number*</label>
               <input value={this.state.registrationNumber} className="w3-input w3-border" type="text"
-                name="Registration Number" onChange={this.handleRegistrationNumber} required />
+                name="Registration Number" pattern="^[A-Z]{2}[0-9]{1,2}(?:[A-Z])?(?:[A-Z]*)?[0-9]{4}$" placeholder="Ex: RJ14AA1234, no sapce and special charactor" onChange={this.handleRegistrationNumber} required />
             </div>
             <button type="submit" className="w3-button w3-block w3-black w3-margin-bottom">Search Pictures</button>
           </form>

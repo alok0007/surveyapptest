@@ -105,7 +105,7 @@ class App extends Component {
   }
   handleSurveyorCode = event => {
     this.setState({
-      surveyorCode: event.target.value.toUpperCase(),
+      surveyorCode: event.target.value,
     })
   }
   handleSurveyDate(date) {
@@ -128,17 +128,17 @@ class App extends Component {
             <div className="w3-section">
               <label>Report Number</label>*
               <input value={this.state.fileNumber} className="w3-input w3-border" type="text" name="File Number"
-                onChange={this.handleFileNumber} pattern="[0-9]*" maxLength="8" required />
+                onChange={this.handleFileNumber} pattern="[0-9]*" maxLength="8" placeholder="Report Number in Numbers only" required />
             </div>
             <div className="w3-section">
               <label>Vehicle Registration Number</label>*
               <input value={this.state.registrationNumber} className="w3-input w3-border" type="text"
-                name="Registration Number" onChange={this.handleRegistrationNumber} required />
+                name="Registration Number" pattern="^[A-Z]{2}[0-9]{1,2}(?:[A-Z])?(?:[A-Z]*)?[0-9]{4}$" placeholder="Ex: RJ14AA1234, no sapce and special charactor" onChange={this.handleRegistrationNumber} required />
             </div>
             <div className="w3-section">
               <label>Executive Code</label>*
               <input value={this.state.surveyorCode} className="w3-input w3-border" type="text"
-                name="Surveyor" autoComplete="off" onChange={this.handleSurveyorCode} required />
+                name="Surveyor" autoComplete="off" placeholder="Please use your own code" onChange={this.handleSurveyorCode} required />
             </div>
             <div className="w3-section">
               <label>Date Of Inception<p></p></label>*

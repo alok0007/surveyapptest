@@ -6,7 +6,7 @@ import Search from './Search';
 import About from './About';
 import Contact from './Contact';
 import { uiproperties } from './uiproperties.js';
-
+const logo = require('./CTSL.JPG')
 //const logo = require('./agsc.JPG')
 
 
@@ -50,7 +50,7 @@ class App extends Component {
         </nav>
 
         <header className="w3-container w3-top w3-white w3-xlarge w3-padding-16">
-          <span className="w3-left w3-padding">{uiproperties.title}</span>
+        <span className="w3-left "><img src={logo} alt="Me" className="w3-image" width="200" height="300" /><b>{uiproperties.title}</b></span>
           <div href="#1" className="w3-right w3-button w3-white" onClick={this.w3Open}>☰</div>
         </header>
 
