@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
+import { globals } from '../config/global'
 import "react-datepicker/dist/react-datepicker.css";
 import './App.css';
 
@@ -46,23 +47,21 @@ class App extends Component {
 
   handleSubmit = async (event) => {
 
-    event.preventDefault(); 
+    event.preventDefault();
     this.setState({ loaded: 1 });
     const body = new FormData();
-    if (this.state.surveyorCode == 'ARVIND'||this.state.surveyorCode == 'NIKHILESH'||this.state.surveyorCode == 'ALOK') {
+    if (globals.executorCodes.indexOf(this.state.surveyorCode.toLowerCase())) {
       if (this.state.selectedFiles && this.state.selectedFiles.length > 0) {
         let count = 1;
         Object.keys(this.state.selectedFiles).forEach(key => {
           count++;
           body.append(`file${count}`, this.state.selectedFiles[key]);
-          //alert(this.state.selectedFiles[key].name);
         });
       }
       body.append('fileNumber', this.state.fileNumber);
       body.append('registrationNumber', this.state.registrationNumber);
       body.append('surveyorCode', this.state.surveyorCode);
       body.append('surveyDate', this.state.surveyDate);
-     // alert("All files attached "+body.fileNumber);
       await axios.post('/uploadExtra', body)
         .then(response => {
           const data = response.data;
@@ -133,7 +132,7 @@ class App extends Component {
             <div className="w3-section">
               <label>Vehicle Registration Number</label>*
               <input value={this.state.registrationNumber} className="w3-input w3-border" type="text"
-                name="Registration Number" pattern="^[A-Z]{2}[0-9]{1,2}(?:[A-Z])?(?:[A-Z]*)?[0-9]{4}$" placeholder="Ex: RJ14AA1234, no sapce and special charactor" onChange={this.handleRegistrationNumber} required />
+                name="Registration Number" pattern="^[A-Z]{2}[0-9]{1,2}(?:[A-Z])?(?:[A-Z]*)?[0-9]{4}$" placeholder="Ex: RJ14AA1234, no space and special character" onChange={this.handleRegistrationNumber} required />
             </div>
             <div className="w3-section">
               <label>Executive Code</label>*
@@ -143,7 +142,7 @@ class App extends Component {
             <div className="w3-section">
               <label>Date Of Inception<p></p></label>*
             <DatePicker className="w3-input w3-border"
-            dateFormat="yyyy/MM/dd"
+                dateFormat="yyyy/MM/dd"
                 selected={this.state.surveyDate}
                 onChange={this.handleSurveyDate}
               />

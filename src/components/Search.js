@@ -54,22 +54,22 @@ class App extends Component {
     await axios.get('/search/' + this.state.fileNumber + '/' + this.state.registrationNumber)
       .then(response => {
         const data = response.data;
-        if(data.message.imageData.length > 0){
+        if (data.message.imageData.length > 0) {
           this.setState({
-            msgStatus: 'Images For File# ' +data.message.fileNumber,
+            msgStatus: 'Images For File# ' + data.message.fileNumber,
             msgType: data.code !== 200 ? 'e' : 'ne',
             surveyorName: data.message.imageData,
             loaded: 0
           })
         }
-          else{
-            this.setState({
-              msgStatus: 'File Number Not Correct ',
-              msgType: data.code !== 200 ? 'e' : 'ne',
-              surveyorName: data.message.imageData,
-              loaded: 0
-            })
-          }                
+        else {
+          this.setState({
+            msgStatus: 'File Number Not Correct ',
+            msgType: data.code !== 200 ? 'e' : 'ne',
+            surveyorName: data.message.imageData,
+            loaded: 0
+          })
+        }
       })
       .catch(e => {
         this.setState({
@@ -135,14 +135,15 @@ class App extends Component {
           </form>
         </div>
         <div className={this.state.msgType === 'e' ? 'w3-text-red' : 'w3-text-green'}>
-        <h4> <b>{this.state.msgStatus}</b></h4>
+          <h4> <b>{this.state.msgStatus}</b></h4>
         </div>
 
         <div className="w3-quarter">
           {this.state.surveyorName &&
             this.state.surveyorName.map(
-              item => <img key={item.name} name={item.name}  onClick={this.showModal} 
-                src={`data:image/jpeg;base64,${item.obj}`} style={{ width: '150px',height: '150px', padding: '10px' }} alt="" />
+              item => (item.name.indexOf('.pdf') === -1) ? <img key={item.name} name={item.name} onClick={this.showModal}
+                src={`data:image/jpeg;base64,${item.obj}`} style={{ width: '150px', height: '150px', padding: '10px' }} alt="" />
+                : <a href={`data:application/pdf;base64,${item.obj}`} download>{item.name}</a>
             )
           }
         </div>
