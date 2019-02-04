@@ -5,11 +5,15 @@ const { Pool } = require('pg');
 const path = require('path');
 const cors = require('cors');
 var fs = require('fs');
+var nodemailer = require('nodemailer');
+var datetime = require('node-datetime');
 const port = parseInt(process.env.PORT, 10) || 3000
 const pool = new Pool({
     connectionString: "postgres://kkcoplxstuhduv:2e83c360f9c88bbf3f708960d6a6a3c99fd71dc6b49dcb3b93d1ce93b1f670de@ec2-23-21-201-12.compute-1.amazonaws.com:5432/d5f8ku16enksu0",
     ssl: true
 });
+var PropertiesReader = require('properties-reader');
+var properties = PropertiesReader('./src/config/application.properties');
 
 const globals = {
     INSERT_ERROR: "INSERT_ERROR",
@@ -48,7 +52,7 @@ const handleResponse = async (code, obj, res, reqType) => {
         res.statusCode = 200;
         res.json(response);
     } catch (e) {
-        console.log(e);
+       // console.log(e);
         res.statusCode = 500;
         res.json(e);
     }
@@ -76,7 +80,7 @@ const handleSearch = async (obj, res, client) => {
         }
         return images;
     } catch (e) {
-        console.log(e);
+       // console.log(e);
         res.statusCode = 500;
         res.json(e);
     }
@@ -89,6 +93,12 @@ app.post('/upload', async (req, res) => {
         let params = req.body;
         let images_id = '';
         const client = await pool.connect();
+
+
+        var dt = datetime.create(params.surveyDate);
+        var formattedDate = dt.format('m/d/y H:M');
+        //console.log(formattedDate);
+
         if (imageFiles) {
             let count = 0;
             Object.keys(imageFiles).forEach(key => {
@@ -101,7 +111,7 @@ app.post('/upload', async (req, res) => {
                 client.query(`INSERT INTO IMAGEMST (IMAGE_ID, INCIDENT_IMAGE, IMAGE_NAME) ` +
                     `VALUES($1, $2, $3)`, [image_id, imageString, imageFiles[key].name])
                     .catch(e => {
-                        console.log(e);
+                       // console.log(e);
                         if (e.code === "23505") {
                             return handleResponse(23505, 'Duplicate entry error', res, globals.INSERT_ERROR)
                         }
@@ -112,13 +122,13 @@ app.post('/upload', async (req, res) => {
             });
         }
         client.query(`INSERT INTO ` +
-            `survey_doc(FILE_NUMBER, VEHICLE_NUMBER, IMAGES_ID, SURVEY_DATE) ` +
-            `VALUES($1, $2, $3, $4)`, [params.fileNumber, params.registrationNumber, images_id, new Date()])
+            `survey_doc(FILE_NUMBER, VEHICLE_NUMBER, IMAGES_ID, SURVEY_DATE, EXECUTIVE_CODE) ` +
+            `VALUES($1, $2, $3, $4, $5)`, [params.fileNumber, params.registrationNumber, images_id, formattedDate, params.surveyorCode])
             .then(response => {
                 return handleResponse(200, response, res, globals.INSERT_SUCCESS);
             })
             .catch(e => {
-                console.log(e);
+                //console.log(e);
                 if (e.code === "23505") {
                     return handleResponse(23505, 'Duplicate entry error', res, globals.INSERT_ERROR)
                 }
@@ -128,10 +138,198 @@ app.post('/upload', async (req, res) => {
             });
         await client.release();
     } catch (e) {
-        console.log(e);
+        //console.log(e);
         return handleResponse(500, e, res, globals.GENERIC_ERROR);
     }
 });
+
+
+
+
+app.post('/uploadExtra', async (req, res) => {
+    try {
+        let imageFiles = req.files;
+        let params = req.body;
+        let images_id = '';
+        const client = await pool.connect();
+
+
+        var dt = datetime.create(params.surveyDate);
+        var formattedDate = dt.format('m/d/y H:M');
+        //console.log(formattedDate);
+        await client.query(`SELECT images_id FROM survey_doc WHERE FILE_NUMBER = $1 and VEHICLE_NUMBER = $2`,
+            [params.fileNumber, params.registrationNumber]).then(async response => {
+               // console.log("response>> " + response);
+              //  console.log("response.rows[0]>> " + response.rows);
+              //  console.log("response.rows.length>> " + response.rows.length);
+
+                if (response.rows.length > 0) {
+                    var imagesStr = response.rows[0].images_id;
+                    images_id = response.rows[0].images_id;
+                    var s = response.rows[0].images_id.split(";");
+                    var existingcount = s.length;
+                  //  console.log("existingcount>> " + existingcount);
+                   // console.log("imagesStr>> " + imagesStr);
+                    if (imageFiles) {
+                        let count = existingcount - 1;
+                        Object.keys(imageFiles).forEach(key => {
+                            count++;
+                            //console.log(count);
+                            let image_id = `${params.fileNumber}_${params.registrationNumber}_${count}`;
+                            images_id += `${image_id};`;
+                            const imageString = Buffer.from(imageFiles[key].data).toString('base64');
+                            //console.log(imageString);
+                            client.query(`INSERT INTO IMAGEMST (IMAGE_ID, INCIDENT_IMAGE, IMAGE_NAME) ` +
+                                `VALUES($1, $2, $3)`, [image_id, imageString, imageFiles[key].name])
+                                .catch(e => {
+                                  //  console.log(e);
+                                    if (e.code === "23505") {
+                                        return handleResponse(23505, 'Duplicate entry error', res, globals.INSERT_ERROR)
+                                    }
+                                    else {
+                                        return handleResponse(500, e, res, globals.INSERT_ERROR)
+                                    }
+                                });
+                        });
+                    }
+                    client.query(`UPDATE survey_doc SET IMAGES_ID = ($1) where FILE_NUMBER =($2) and VEHICLE_NUMBER = ($3)`,
+                        [images_id, params.fileNumber, params.registrationNumber])
+                        .then(response => {
+                            return handleResponse(200, response, res, globals.INSERT_SUCCESS);
+                        })
+                        .catch(e => {
+                           // console.log(e);
+                            if (e.code === "23505") {
+                                return handleResponse(23505, 'Duplicate entry error', res, globals.INSERT_ERROR)
+                            }
+                            else {
+                                return handleResponse(500, e, res, globals.INSERT_ERROR)
+                            }
+                        });
+                }
+
+                else {
+                    if (imageFiles) {
+                        let count = 0;
+                        Object.keys(imageFiles).forEach(key => {
+                            count++;
+                           // console.log("Running For >>"+count);
+                            let image_id = `${params.fileNumber}_${params.registrationNumber}_${count}`;
+                            images_id += `${image_id};`;
+                            const imageString = Buffer.from(imageFiles[key].data).toString('base64');
+                            //console.log(imageString);
+                            client.query(`INSERT INTO IMAGEMST (IMAGE_ID, INCIDENT_IMAGE, IMAGE_NAME) ` +
+                                `VALUES($1, $2, $3)`, [image_id, imageString, imageFiles[key].name])
+                                .then(response => {
+                                  //  console.log("Image "+image_id+ "has been inserted in IMAGEMST TABLE")
+                                }).catch(e => {
+                                  //  console.log(e);
+                                    if (e.code === "23505") {
+                                        return handleResponse(23505, 'Duplicate entry error', res, globals.INSERT_ERROR)
+                                    }
+                                    else {
+                                        return handleResponse(500, e, res, globals.INSERT_ERROR)
+                                    }
+                                });
+                        });
+                    }
+                    client.query(`INSERT INTO ` +
+                        `survey_doc(FILE_NUMBER, VEHICLE_NUMBER, IMAGES_ID, SURVEY_DATE, EXECUTIVE_CODE) ` +
+                        `VALUES($1, $2, $3, $4, $5)`, [params.fileNumber, params.registrationNumber, images_id, formattedDate, params.surveyorCode])
+                        .then(response => {
+                            return handleResponse(200, response, res, globals.INSERT_SUCCESS);
+                        })
+                        .catch(e => {
+                           // console.log(e);
+                            if (e.code === "23505") {
+                                return handleResponse(23505, 'Duplicate entry error', res, globals.INSERT_ERROR)
+                            }
+                            else {
+                                return handleResponse(500, e, res, globals.INSERT_ERROR)
+                            }
+                        });
+
+                }
+
+                // return handleResponse(200, response, res, globals.SELECT_SUCCESS);
+            }).catch(e => {
+               // console.log("Some undefined Error TBD" + e);
+                return handleResponse(23505, 'Some undefined Error TBD', res, globals.INSERT_ERROR)
+            });
+
+
+        await client.release();
+    } catch (e) {
+       // console.log(e);
+        return handleResponse(500, e, res, globals.GENERIC_ERROR);
+    }
+});
+
+
+
+
+
+
+app.post('/requestForUpload', async (req, res) => {
+    try {
+        let params = req.body;
+        const client = await pool.connect();
+
+        client.query(`INSERT INTO ` +
+            `image_request(REQUESTOR_NAME, FILE_NUMBER, VEHICLE_NUMBER, REQUEST_DATE) ` +
+            `VALUES($1, $2, $3, $4)`, [params.requestorName, params.fileNumber, params.registrationNumber, new Date()])
+            .then(response => {
+                return handleResponse(200, response, res, globals.INSERT_SUCCESS);
+            })
+            .catch(e => {
+               // console.log(e);
+                if (e.code === "23505") {
+                    return handleResponse(23505, 'Duplicate entry error', res, globals.INSERT_ERROR)
+                }
+                else {
+                    return handleResponse(500, e, res, globals.INSERT_ERROR)
+                }
+            });
+        await client.release();
+    } catch (e) {
+       // console.log(e);
+        return handleResponse(500, e, res, globals.GENERIC_ERROR);
+    }
+});
+
+app.post('/requestSendMail', async (req, res) => {
+    try {
+        let params = req.body;
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'creativetechjaipur@gmail.com',
+                pass: 'ag@549508'
+            }
+        });
+        const mailOptions = {
+            from: 'creativetechjaipur@gmail.com', // sender address
+            to: 'gaursurveyor@yahoo.co.in', // list of receivers
+            cc: 'nikhileshtiwari80@gmail.com',
+            subject: 'Important: Queriy From ' + params.requestorName, // Subject line
+            html: '<h1>Customer Queries</h1><h2>Customer Name: ' + params.requestorName + '</h2><h2>Report Number: ' + params.fileNumber + '</h2><h2>Vehicle Registration Number: ' + params.registrationNumber + '</h2><h2>Report Date: ' + params.surveyDate + '</h2><h2>Queries : ' + params.customerQueries + '</h2>'
+
+        };
+
+        transporter.sendMail(mailOptions, function (err, info) {
+            if (err)
+                console.log(err)
+            else
+                console.log(info);
+        });
+
+
+    } catch (e) {
+       // console.log(e);
+        return handleResponse(500, e, res, globals.GENERIC_ERROR);
+    }
+});
+
 
 app.get('/search/:fileNumber/:registrationNumber', async (req, res) => {
 

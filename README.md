@@ -13,8 +13,22 @@ https://stackoverflow.com/questions/31177414/insert-data-from-form-into-mysql-us
 http://www.javascriptpoint.com/nodejs-postgresql-tutorial-example/
 https://www.postgresql.org/docs/9.1/sql-createtable.html
 http://www.postgresqltutorial.com/postgresql-create-table/
+http://www.postgresqltutorial.com/postgresql-date/
 
 https://expressjs.com/en/guide/using-template-engines.html
+
+property file reading : https://riptutorial.com/node-js/example/31279/loading-environment-properties-from-a--property-file-
+https://stackoverflow.com/questions/49706241/reactjs-read-a-properties-file
+
+date picker:
+https://www.npmjs.com/package/react-datepicker
+https://reactdatepicker.com/#example-7
+https://www.npmjs.com/package/node-datetime
+
+case handling :
+https://stackoverflow.com/questions/47709037/how-to-create-a-controlled-form-in-react-that-allows-upper-case-letters-only
+
+https://codeburst.io/sending-an-email-using-nodemailer-gmail-7cfa0712a799
 ***********************SQL********************************************************
 
 
@@ -34,8 +48,7 @@ CREATE TABLE SURVEY_FILE(
 );
 
 INSERT INTO SURVEY_FILE (FILE_NUMBER,VEHICLE_NUMBER,SURVEYOR_NAME,IMAGE_NAME,SURVEY_DATE) VALUES (1011, 'RJ14CF9592', 'ARVIND', '1011.JPEG', '2007-12-13');
-INSERT INTO SURVEY_FILE (FILE_NUMBER,VEHICLE_NUMBER,SURVEYOR_NAME,IMAGE_NAME,SURVEY_DATE) VALUES (1012, 'RJ14CF9593', 'KAILASH', '1012.JPEG', '2008-12-13');
-INSERT INTO SURVEY_FILE (FILE_NUMBER,VEHICLE_NUMBER,SURVEYOR_NAME,IMAGE_NAME,SURVEY_DATE) VALUES (1013, 'RJ14CF9441', 'GOPAL', '1013.JPEG', '2007-12-14');
+
 
 
 CREATE TABLE SURVEY_DOC(
@@ -45,6 +58,14 @@ CREATE TABLE SURVEY_DOC(
    IMAGES_ID        CHAR(50),
    SURVEY_DATE         DATE
 );
+
+CREATE TABLE IMAGE_REQUEST(
+   REQUESTOR_NAME TEXT    ,
+   FILE_NUMBER           TEXT   ,
+   VEHICLE_NUMBER        TEXT ,    
+   REQUEST_DATE         DATE
+);
+
 INSERT INTO SURVEY_DOC (FILE_NUMBER,VEHICLE_NUMBER,SURVEYOR_IMAGE,IMAGES_ID,SURVEY_DATE) VALUES (1002, 'RJ14CF9441', null, '1002_RJ14CF9441_1;1002_RJ14CF9441_2', '2007-12-14');
 
 CREATE TABLE IMAGEMST(
@@ -54,6 +75,13 @@ CREATE TABLE IMAGEMST(
 );
 INSERT INTO SURVEY_DOC (IMAGE_ID,IMAGE_NAME,SURVEYOR_IMAGE,SURVEYOR_IMAGE) VALUES ('1002_RJ14CF9441_1', '1002_RJ14CF9441_1.jpeg', null);
 
+ALTER TABLE "table_name" DROP "column_name";
+
+alter table table_name add column column_name column_type
+
+alter table SURVEY_DOC add column EXECUTIVE_CODE TEXT
+
+delete from SURVEY_DOC
 
 Queries:
 1) Need input name details like file number, registration number, along with validation.
@@ -68,8 +96,3 @@ form fields
 3. Vehicle Number*: alpha nummeric not extra charector
 4. photos*: limit 10
 
-form fields
-1. Report number(File Number)*: only number
-2. Report date: user entry *: calender : only past/current
-3. Vehicle Number*: alpha nummeric not extra charector
-4. photos*: limit 10

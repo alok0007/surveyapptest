@@ -6,7 +6,7 @@ import Search from './Search';
 import About from './About';
 import Contact from './Contact';
 import { uiproperties } from './uiproperties.js';
-const logo = require('./CTSL.JPG')
+
 //const logo = require('./agsc.JPG')
 
 
@@ -46,11 +46,12 @@ class App extends Component {
           <Link to='/' className="w3-bar-item w3-button w3-center w3-padding-16">ABOUT US</Link>
           <Link to='/addPhotos' className="w3-bar-item w3-button w3-center w3-padding-16">ADD PHOTOS</Link>
           <Link to='/search' className="w3-bar-item w3-button w3-center w3-padding-16">SEARCH PHOTOS</Link>
-          <Link to='/contact' className="w3-bar-item w3-button w3-center w3-padding-16">CONTACT US</Link>
+          <Link to='/contact' className="w3-bar-item w3-button w3-center w3-padding-16">CONTACT</Link>
         </nav>
 
         <header className="w3-container w3-top w3-white w3-xlarge w3-padding-16">
-        <span className="w3-left "><img src={logo} alt="Me" className="w3-image" width="200" height="300" /><b>{uiproperties.title}</b></span>
+          <span className="w3-left "><img src={logo} alt="Me" className="w3-image" width="150" height="300" />
+          <b>{uiproperties.title}</b></span>
           <div href="#1" className="w3-right w3-button w3-white" onClick={this.w3Open}>☰</div>
         </header>
 
@@ -60,9 +61,9 @@ class App extends Component {
         <div className="w3-main w3-content" style={divStyle}>
 
           <Switch>
-            <Route exact path='/' component={About} />
-            <Route path='/addPhotos' component={Add} />
+            <Route exact path='/addPhotos' component={Add} />
             <Route path='/search' component={Search} />
+            <Route path='/' component={About} />
             <Route path='/contact' component={Contact} />
           </Switch>
 
